@@ -21,7 +21,7 @@ class UsersController extends Controller
         $microposts =$user->microposts()->orderBy('created_at', 'desc')->paginate(10);
         
         $data = [
-            'user' = $user,
+            'user' => $user,
             'microposts' => $microposts,
             ];
             
@@ -59,7 +59,6 @@ class UsersController extends Controller
 
         return view('users.followers', $data);
     }
-    
     
 }
 
