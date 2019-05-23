@@ -32,6 +32,7 @@ class User extends Authenticatable
         return $this->hasMany(Micropost::class);
     }
     
+    
     public function followings()
     {
         //user_idがfollow_idをフォローしている
@@ -41,8 +42,8 @@ class User extends Authenticatable
     
     public function followers()
     {
-        //follow_idがuser_idにフォローされている
-        return $this->belongsToMany(User::class, 'user_follow', 'follow_id','user_id')->withTimesamps();
+        //follow_idはuser_idをフォローする。フォローワーを呼ぶ
+        return $this->belongsToMany(User::class, 'user_follow', 'follow_id','user_id')->withTimestamps();
     }
     
     public function follow($userId)
@@ -50,7 +51,7 @@ class User extends Authenticatable
         //すでにフォローしているかの確認
         $exist = $this->is_following($userId);
         //相手が自分ではないかの確認
-        $its_me =$this->id == $userId;
+        $its_me = $this->id == $userId;
         
         if ($exist || $its_me) {
             //すでにフォローしていたら何もしない
@@ -81,13 +82,13 @@ class User extends Authenticatable
     
     public function is_following ($userId)
     {
-        return $this->followings()->where('follow_id',$userId)->exists();
+        return $this->followings()->where('follow_id', $userId)->exists();
     }
     
     public function feed_microposts()
     {
         $follow_user_ids = $this->followings()->pluck('users.id')->toArray();
-        $follow_user_ids[] =$this->id;
+        $follow_user_ids[] = $this->id;
         return Micropost::whereIn('user_id', $follow_user_ids);
     }
 }
